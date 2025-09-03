@@ -35,6 +35,35 @@
       transition:background .2s;
     }
     .about-btn:hover { background:#004182; }
+
+    /* 点赞按钮样式 */
+    .like-box {
+      margin:30px 0;
+      text-align:center;
+      font-size:18px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:12px;
+    }
+    .like-btn {
+      width:50px;
+      height:50px;
+      border-radius:50%;
+      border:none;
+      background:#1877f2; /* 蓝色 */
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      cursor:pointer;
+      transition:background .2s;
+    }
+    .like-btn:hover { background:#0f5dc1; }
+    .like-btn svg {
+      width:26px;
+      height:26px;
+      fill:#fff;
+    }
   </style>
 </head>
 <body>
@@ -84,6 +113,19 @@
       </figure>
     
     </section>
+
+    <!-- 点赞区域 -->
+    <div class="like-box">
+      <button id="likeBtn" class="like-btn">
+        <!-- 蓝色圆形大拇指 SVG -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M2 21h4V9H2v12zM22 9h-6.31l.95-4.57.03-.32
+                   a1 1 0 0 0-.29-.7l-1-1L10 9.41V21h9a2 2 0 0 0 
+                   2-2v-7a2 2 0 0 0-2-2z"/>
+        </svg>
+      </button>
+      <span id="likeCount">0</span>
+    </div>
   </main>
 
   <footer>
@@ -120,6 +162,26 @@
     }
     closeBtn.addEventListener('click', closeLightbox);
     window.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+
+    // 点赞功能：countapi.xyz
+    const likeBtn = document.getElementById("likeBtn");
+    const likeCount = document.getElementById("likeCount");
+
+    // 获取当前点赞数
+    fetch("https://api.countapi.xyz/get/shawn/video/likes")
+      .then(res => res.json())
+      .then(res => {
+        likeCount.textContent = res.value;
+      });
+
+    // 点击点赞按钮
+    likeBtn.addEventListener("click", () => {
+      fetch("https://api.countapi.xyz/hit/shawn/video/likes")
+        .then(res => res.json())
+        .then(res => {
+          likeCount.textContent = res.value;
+        });
+    });
   </script>
 </body>
 </html>
