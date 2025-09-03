@@ -35,35 +35,6 @@
       transition:background .2s;
     }
     .about-btn:hover { background:#004182; }
-
-    /* 点赞按钮样式 */
-    .like-box {
-      margin:30px 0;
-      text-align:center;
-      font-size:18px;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      gap:12px;
-    }
-    .like-btn {
-      width:50px;
-      height:50px;
-      border-radius:50%;
-      border:none;
-      background:#1877f2; /* 蓝色 */
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      cursor:pointer;
-      transition:background .2s;
-    }
-    .like-btn:hover { background:#0f5dc1; }
-    .like-btn svg {
-      width:26px;
-      height:26px;
-      fill:#fff;
-    }
   </style>
 </head>
 <body>
@@ -111,17 +82,6 @@
         <figcaption>Avata 2</figcaption>
       </figure>
     </section>
-
-    <!-- 点赞区域 -->
-    <div class="like-box">
-      <button id="likeBtn" class="like-btn">
-        <!-- 干净版点赞图标 -->
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <path d="M9 22h9a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-6V7a2 2 0 0 0-2-2H9v17zM7 22H4V9h3v13z"/>
-        </svg>
-      </button>
-      <span id="likeCount">0</span>
-    </div>
   </main>
 
   <footer>
@@ -136,49 +96,6 @@
       <iframe id="vimeoFrame" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe>
     </div>
   </div>
-
-  <!-- Firebase 点赞功能 -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-
-    // 你的 Firebase 配置
-    const firebaseConfig = {
-      apiKey: "AIzaSyAfq8l-Ndd72wV_oce4_efqI3x5NbAuXNY",
-      authDomain: "flyshawn-342cd.firebaseapp.com",
-      projectId: "flyshawn-342cd",
-      storageBucket: "flyshawn-342cd.firebasestorage.app",
-      messagingSenderId: "656513393404",
-      appId: "1:656513393404:web:c537f1043ded32d5752d79",
-      measurementId: "G-V0YSZ10XN2"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    const likeBtn = document.getElementById("likeBtn");
-    const likeCount = document.getElementById("likeCount");
-    const likeRef = doc(db, "likes", "video1");
-
-    // 读取点赞数
-    async function loadLikes() {
-      const snap = await getDoc(likeRef);
-      if (snap.exists()) {
-        likeCount.textContent = snap.data().count;
-      } else {
-        await setDoc(likeRef, { count: 0 });
-        likeCount.textContent = 0;
-      }
-    }
-    loadLikes();
-
-    // 点赞 +1
-    likeBtn.addEventListener("click", async () => {
-      await updateDoc(likeRef, { count: increment(1) });
-      const snap = await getDoc(likeRef);
-      likeCount.textContent = snap.data().count;
-    });
-  </script>
 
   <!-- Vimeo 弹窗逻辑 -->
   <script>
