@@ -117,11 +117,9 @@
     <!-- 点赞区域 -->
     <div class="like-box">
       <button id="likeBtn" class="like-btn">
-        <!-- 蓝色圆形大拇指 SVG -->
+        <!-- 干净版点赞图标，没有凸出来的尖尖 -->
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <path d="M2 21h4V9H2v12zM22 9h-6.31l.95-4.57.03-.32
-                   a1 1 0 0 0-.29-.7l-1-1L10 9.41V21h9a2 2 0 0 0 
-                   2-2v-7a2 2 0 0 0-2-2z"/>
+          <path d="M9 22h9a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-6V7a2 2 0 0 0-2-2H9v17zM7 22H4V9h3v13z"/>
         </svg>
       </button>
       <span id="likeCount">0</span>
@@ -167,16 +165,20 @@
     const likeBtn = document.getElementById("likeBtn");
     const likeCount = document.getElementById("likeCount");
 
-    // 获取当前点赞数
-    fetch("https://api.countapi.xyz/get/shawn/video/likes")
-      .then(res => res.json())
-      .then(res => {
-        likeCount.textContent = res.value;
+    // 初始化计数器（只需要执行一次，后续会保留值）
+    fetch("https://api.countapi.xyz/create?namespace=shawn&key=video-likes&value=0")
+      .then(() => {
+        // 获取当前点赞数
+        fetch("https://api.countapi.xyz/get/shawn/video-likes")
+          .then(res => res.json())
+          .then(res => {
+            likeCount.textContent = res.value;
+          });
       });
 
-    // 点击点赞按钮
+    // 点击按钮时 +1
     likeBtn.addEventListener("click", () => {
-      fetch("https://api.countapi.xyz/hit/shawn/video/likes")
+      fetch("https://api.countapi.xyz/hit/shawn/video-likes")
         .then(res => res.json())
         .then(res => {
           likeCount.textContent = res.value;
