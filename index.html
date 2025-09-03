@@ -71,7 +71,6 @@
 
   <main>
     <section class="grid">
-
       <figure class="card" data-type="vimeo" data-src="https://player.vimeo.com/video/1111634878">
         <div class="thumb">
           <img src="https://i.imgur.com/3fQty8V.jpeg" alt="Cover 1" loading="lazy">
@@ -111,13 +110,12 @@
         </div>
         <figcaption>Avata 2</figcaption>
       </figure>
-    
     </section>
 
     <!-- 点赞区域 -->
     <div class="like-box">
       <button id="likeBtn" class="like-btn">
-        <!-- 干净版点赞图标，没有凸出来的尖尖 -->
+        <!-- 干净版点赞图标 -->
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
           <path d="M9 22h9a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-6V7a2 2 0 0 0-2-2H9v17zM7 22H4V9h3v13z"/>
         </svg>
@@ -127,9 +125,9 @@
   </main>
 
   <footer>
-  © 2025 | Vimeo · Imgur <br>
-  <a href="mailto:shawnzhao0518@gmail.com">shawnzhao0518@gmail.com</a><br>
-  <a href="https://about-shawn-ssfa.vercel.app" target="_blank" class="about-btn">About Shawn</a>
+    © 2025 | Vimeo · Imgur <br>
+    <a href="mailto:shawnzhao0518@gmail.com">shawnzhao0518@gmail.com</a><br>
+    <a href="https://about-shawn-ssfa.vercel.app" target="_blank" class="about-btn">About Shawn</a>
   </footer>
   
   <div class="lightbox" id="lightbox">
@@ -139,6 +137,50 @@
     </div>
   </div>
 
+  <!-- Firebase 点赞功能 -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+    // 你的 Firebase 配置
+    const firebaseConfig = {
+      apiKey: "AIzaSyAfq8l-Ndd72wV_oce4_efqI3x5NbAuXNY",
+      authDomain: "flyshawn-342cd.firebaseapp.com",
+      projectId: "flyshawn-342cd",
+      storageBucket: "flyshawn-342cd.firebasestorage.app",
+      messagingSenderId: "656513393404",
+      appId: "1:656513393404:web:c537f1043ded32d5752d79",
+      measurementId: "G-V0YSZ10XN2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const likeBtn = document.getElementById("likeBtn");
+    const likeCount = document.getElementById("likeCount");
+    const likeRef = doc(db, "likes", "video1");
+
+    // 读取点赞数
+    async function loadLikes() {
+      const snap = await getDoc(likeRef);
+      if (snap.exists()) {
+        likeCount.textContent = snap.data().count;
+      } else {
+        await setDoc(likeRef, { count: 0 });
+        likeCount.textContent = 0;
+      }
+    }
+    loadLikes();
+
+    // 点赞 +1
+    likeBtn.addEventListener("click", async () => {
+      await updateDoc(likeRef, { count: increment(1) });
+      const snap = await getDoc(likeRef);
+      likeCount.textContent = snap.data().count;
+    });
+  </script>
+
+  <!-- Vimeo 弹窗逻辑 -->
   <script>
     const cards = document.querySelectorAll('.card');
     const lightbox = document.getElementById('lightbox');
@@ -160,30 +202,6 @@
     }
     closeBtn.addEventListener('click', closeLightbox);
     window.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
-
-    // 点赞功能：countapi.xyz
-    const likeBtn = document.getElementById("likeBtn");
-    const likeCount = document.getElementById("likeCount");
-
-    // 初始化计数器（只需要执行一次，后续会保留值）
-    fetch("https://api.countapi.xyz/create?namespace=shawn&key=video-likes&value=0")
-      .then(() => {
-        // 获取当前点赞数
-        fetch("https://api.countapi.xyz/get/shawn/video-likes")
-          .then(res => res.json())
-          .then(res => {
-            likeCount.textContent = res.value;
-          });
-      });
-
-    // 点击按钮时 +1
-    likeBtn.addEventListener("click", () => {
-      fetch("https://api.countapi.xyz/hit/shawn/video-likes")
-        .then(res => res.json())
-        .then(res => {
-          likeCount.textContent = res.value;
-        });
-    });
   </script>
 </body>
 </html>
