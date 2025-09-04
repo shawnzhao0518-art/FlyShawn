@@ -35,6 +35,18 @@
       transition:background .2s;
     }
     .about-btn:hover { background:#004182; }
+    /* 点赞按钮样式 */
+    #likeBtn {
+      margin-top: 15px;
+      padding: 8px 16px;
+      font-size: 15px;
+      background: #ff4d4f;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #likeBtn:hover { background: #d9363e; }
   </style>
 </head>
 <body>
@@ -88,6 +100,9 @@
     © 2025 | Vimeo · Imgur <br>
     <a href="mailto:shawnzhao0518@gmail.com">shawnzhao0518@gmail.com</a><br>
     <a href="https://about-shawn-ssfa.vercel.app" target="_blank" class="about-btn">About Shawn</a>
+    <br><br>
+    <!-- 点赞按钮 -->
+    <button id="likeBtn">👍 点赞 <span id="likeCount">0</span></button>
   </footer>
   
   <div class="lightbox" id="lightbox">
@@ -119,6 +134,53 @@
     }
     closeBtn.addEventListener('click', closeLightbox);
     window.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  </script>
+
+  <!-- Firebase 点赞逻辑 -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+    // 你的 Firebase 配置
+    const firebaseConfig = {
+      apiKey: "AIzaSyAfq8l-Ndd72wV_oce4_efqI3x5NbAuXNY",
+      authDomain: "flyshawn-342cd.firebaseapp.com",
+      projectId: "flyshawn-342cd",
+      storageBucket: "flyshawn-342cd.firebasestorage.app",
+      messagingSenderId: "656513393404",
+      appId: "1:656513393404:web:c537f1043ded32d5752d79",
+      measurementId: "G-V0YSZ10XN2"
+    };
+
+    // 初始化 Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const likeBtn = document.getElementById("likeBtn");
+    const likeCount = document.getElementById("likeCount");
+    const docRef = doc(db, "likes", "page1"); // Firestore 集合: likes, 文档: page1
+
+    async function loadLikes() {
+      const snap = await getDoc(docRef);
+      if (snap.exists()) {
+        likeCount.textContent = snap.data().count;
+      } else {
+        likeCount.textContent = 0;
+      }
+    }
+
+    async function addLike() {
+      const snap = await getDoc(docRef);
+      let newCount = 1;
+      if (snap.exists()) {
+        newCount = snap.data().count + 1;
+      }
+      await setDoc(docRef, { count: newCount });
+      likeCount.textContent = newCount;
+    }
+
+    likeBtn.addEventListener("click", addLike);
+    loadLikes();
   </script>
 </body>
 </html>
