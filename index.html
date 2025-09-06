@@ -9,23 +9,11 @@
     * { box-sizing:border-box; margin:0; padding:0; }
     body { font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:#f5f5f5; color:#111; }
 
-    /* Header */
-    header { padding:16px; background:#111; color:#fff; }
-    .header-wrap {
-      max-width: var(--maxw);
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-    }
-    header h1 { font-size:24px; margin:0; }
-    #map-header {
-      width: 300px;
-      height: 100px;
-      border-radius: 8px;
-      box-shadow: var(--shadow);
-    }
+    /* Header（标题 + 小地图同一行） */
+    header { padding:24px 16px; background:#111; color:#fff; }
+    .header-wrap { max-width:var(--maxw); margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+    header h1 { font-size:26px; letter-spacing:.5px; margin:0; }
+    #map-header { width:300px; height:100px; border-radius:10px; box-shadow:var(--shadow); overflow:hidden; background:#222; }
 
     /* 视频卡片 */
     main { max-width:var(--maxw); margin:24px auto; padding:0 16px; }
@@ -37,22 +25,10 @@
     .play-badge { position:absolute; left:12px; bottom:12px; background:rgba(0,0,0,.55); color:#fff; font-size:13px; padding:6px 10px; border-radius:999px; pointer-events:none; }
     figcaption { padding:10px 12px 14px; font-size:13px; color:#666; background:#fff; }
 
-    /* Footer */
+    /* Footer & Lightbox（原样保留） */
     footer { text-align:center; padding:20px; font-size:14px; color:#666; }
-    .about-btn {
-      display:inline-block;
-      margin-top:8px;
-      padding:8px 14px;
-      background:#0a66c2;
-      color:#fff;
-      border-radius:8px;
-      text-decoration:none;
-      font-size:14px;
-      transition:background .2s;
-    }
+    .about-btn { display:inline-block; margin-top:8px; padding:8px 14px; background:#0a66c2; color:#fff; border-radius:8px; text-decoration:none; font-size:14px; transition:background .2s; }
     .about-btn:hover { background:#004182; }
-
-    /* Lightbox */
     .lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); justify-content:center; align-items:center; z-index:1000; }
     .lightbox-content { position:relative; width:min(92vw, 960px); aspect-ratio:16/9; }
     .lightbox iframe { position:absolute; inset:0; width:100%; height:100%; border:none; background:#000; }
@@ -68,7 +44,7 @@
     </div>
   </header>
 
-  <!-- 视频卡片 -->
+  <!-- 视频卡片（你的原始内容保留） -->
   <main>
     <section class="grid">
       <figure class="card" data-src="https://player.vimeo.com/video/1111634878">
@@ -78,6 +54,7 @@
         </div>
         <figcaption>Avata 2</figcaption>
       </figure>
+
       <figure class="card" data-src="https://player.vimeo.com/video/1110632369">
         <div class="thumb">
           <img src="https://i.imgur.com/w4nz2QB.jpeg" alt="Cover 2" loading="lazy">
@@ -85,6 +62,7 @@
         </div>
         <figcaption>Avata 2</figcaption>
       </figure>
+
       <figure class="card" data-src="https://player.vimeo.com/video/1115051579">
         <div class="thumb">
           <img src="https://i.imgur.com/DCBXara.png" alt="Cover 3" loading="lazy">
@@ -92,6 +70,7 @@
         </div>
         <figcaption>Avata 2</figcaption>
       </figure>
+
       <figure class="card" data-src="https://player.vimeo.com/video/1115051720">
         <div class="thumb">
           <img src="https://i.imgur.com/GuUd8SF.jpeg" alt="Cover 4" loading="lazy">
@@ -99,6 +78,7 @@
         </div>
         <figcaption>Avata 2</figcaption>
       </figure>
+
       <figure class="card" data-src="https://player.vimeo.com/video/1115051841">
         <div class="thumb">
           <img src="https://i.imgur.com/Bgh3HCv.jpeg" alt="Cover 5" loading="lazy">
@@ -109,14 +89,13 @@
     </section>
   </main>
 
-  <!-- 底部 -->
   <footer>
     © 2025 | Vimeo · Imgur <br>
     <a href="mailto:shawnzhao0518@gmail.com">shawnzhao0518@gmail.com</a><br>
     <a href="https://about-shawn-ssfa.vercel.app" target="_blank" class="about-btn">About Shawn</a>
   </footer>
 
-  <!-- Lightbox -->
+  <!-- Lightbox（保留原逻辑） -->
   <div class="lightbox" id="lightbox">
     <div class="lightbox-content">
       <span class="lightbox-close" id="lightbox-close">&times;</span>
@@ -124,95 +103,122 @@
     </div>
   </div>
 
-  <!-- JS 逻辑 -->
   <script>
-    // Lightbox 打开/关闭
+    // Lightbox
+    const lightbox = document.getElementById('lightbox');
+    const vimeoFrame = document.getElementById('vimeoFrame');
     function openLightboxWith(url) {
-      const lb = document.getElementById('lightbox');
-      const frame = document.getElementById('vimeoFrame');
       const playUrl = url + (url.includes('?') ? '&' : '?') + 'autoplay=1';
-      frame.src = playUrl;
-      lb.style.display = 'flex';
+      vimeoFrame.src = playUrl;
+      lightbox.style.display = 'flex';
     }
-    function closeLightbox() {
-      const lb = document.getElementById('lightbox');
-      const frame = document.getElementById('vimeoFrame');
-      lb.style.display = 'none';
-      frame.src = '';
-    }
-    document.querySelectorAll('.card').forEach(card => {
-      card.addEventListener('click', () => {
-        const src = card.getAttribute('data-src');
-        if (src) openLightboxWith(src);
-      });
-    });
+    function closeLightbox() { lightbox.style.display = 'none'; vimeoFrame.src=''; }
+    document.querySelectorAll('.card').forEach(card => card.addEventListener('click', () => openLightboxWith(card.dataset.src)));
     document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
-    window.addEventListener('click', e => { if (e.target.id === 'lightbox') closeLightbox(); });
+    window.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
 
-    // 地图逻辑：同一坐标可有多个视频
+    // ===== 小地图：合并相同地点，信息窗内显示多个视频 =====
     function initMap() {
       const map = new google.maps.Map(document.getElementById("map-header"), {
-        zoom: 11,
-        center: { lat: -33.9, lng: 151.2 },
+        // 小地图更清爽：禁用交互，保留点击 Marker
+        disableDefaultUI: true,
+        gestureHandling: "none",
+        mapTypeControl: false,
+        streetViewControl: false
       });
 
+      // 统一的数据：同地点包含多个视频
       const locations = [
-        {
-          lat: -33.7890416, lng: 151.0104213, title: "Parramatta Lake Walk",
-          videos: [
-            { title: "Avata 2", img: "https://i.imgur.com/3fQty8V.jpeg", url: "https://player.vimeo.com/video/1111634878" }
-          ]
-        },
-        {
-          lat: -34.0170707, lng: 151.2308465, title: "Cape Solander",
-          videos: [
-            { title: "Avata 2", img: "https://i.imgur.com/w4nz2QB.jpeg", url: "https://player.vimeo.com/video/1110632369" }
-          ]
-        },
-        {
-          lat: -33.78807, lng: 151.00379, title: "Hazel Ryan Oval",
-          videos: [
-            { title: "Avata 2", img: "https://i.imgur.com/DCBXara.png", url: "https://player.vimeo.com/video/1115051579" },
-            { title: "Avata 2", img: "https://i.imgur.com/Bgh3HCv.jpeg", url: "https://player.vimeo.com/video/1115051841" }
-          ]
-        },
-        {
-          lat: -33.8360157, lng: 151.0755723, title: "Bay Marker, Wentworth Point",
-          videos: [
-            { title: "Avata 2", img: "https://i.imgur.com/GuUd8SF.jpeg", url: "https://player.vimeo.com/video/1115051720" }
-          ]
-        }
+        // —— 第一个视频的 4 个地点 ——
+        { title: "Parramatta Lake Walk (East)", lat: -33.7890416, lng: 151.0104213, videos: [
+          { title:"Avata 2", img:"https://i.imgur.com/3fQty8V.jpeg", url:"https://player.vimeo.com/video/1111634878" }
+        ]},
+        { title: "Parramatta Lake Walk (West)", lat: -33.7885361, lng: 151.0011652, videos: [
+          { title:"Avata 2", img:"https://i.imgur.com/3fQty8V.jpeg", url:"https://player.vimeo.com/video/1111634878" }
+        ]},
+        // Cape Solander：第一个 & 第二个（合并）
+        { title: "Cape Solander", lat: -34.0170707, lng: 151.2308465, videos: [
+          { title:"Avata 2 (Video 1)", img:"https://i.imgur.com/3fQty8V.jpeg", url:"https://player.vimeo.com/video/1111634878" },
+          { title:"Avata 2 (Video 2)", img:"https://i.imgur.com/w4nz2QB.jpeg", url:"https://player.vimeo.com/video/1110632369" }
+        ]},
+        // Hazel Ryan Oval：第一个 & 第三个 & 第五个（合并）
+        { title: "Hazel Ryan Oval", lat: -33.78807, lng: 151.00379, videos: [
+          { title:"Avata 2 (Video 1)", img:"https://i.imgur.com/3fQty8V.jpeg", url:"https://player.vimeo.com/video/1111634878" },
+          { title:"Avata 2 (Video 3)", img:"https://i.imgur.com/DCBXara.png", url:"https://player.vimeo.com/video/1115051579" },
+          { title:"Avata 2 (Video 5)", img:"https://i.imgur.com/Bgh3HCv.jpeg", url:"https://player.vimeo.com/video/1115051841" }
+        ]},
+        // —— 其他视频独立地点 ——
+        { title: "Bay Marker · Wentworth Point", lat: -33.8360157, lng: 151.0755723, videos: [
+          { title:"Avata 2 (Video 4)", img:"https://i.imgur.com/GuUd8SF.jpeg", url:"https://player.vimeo.com/video/1115051720" }
+        ]}
       ];
 
-      locations.forEach(loc => {
+      // 地图样式：更简洁
+      map.setOptions({
+        styles: [
+          { featureType:"poi", stylers:[{visibility:"off"}] },
+          { featureType:"transit", stylers:[{visibility:"off"}] },
+          { featureType:"road", elementType:"labels.icon", stylers:[{visibility:"off"}] }
+        ]
+      });
+
+      // 自适应到所有点
+      const bounds = new google.maps.LatLngBounds();
+      const infoWindows = [];
+
+      // 自定义小圆点图标（更简洁）
+      const svgPin = {
+        path: "M8 0a8 8 0 0 0-8 8c0 4.418 8 16 8 16s8-11.582 8-16a8 8 0 0 0-8-8z",
+        fillColor: "#0a66c2",
+        fillOpacity: 1,
+        strokeColor: "#ffffff",
+        strokeWeight: 2,
+        scale: 1
+      };
+
+      locations.forEach((loc, i) => {
+        const pos = { lat: loc.lat, lng: loc.lng };
+        bounds.extend(pos);
+
         const marker = new google.maps.Marker({
-          position: { lat: loc.lat, lng: loc.lng },
+          position: pos,
           map,
           title: loc.title,
+          icon: svgPin,
+          label: { text: String(i+1), color:"#fff", fontSize:"12px", fontWeight:"600" }
         });
 
-        const html = `
-          <div style="max-width:220px;">
-            <h3>${loc.title}</h3>
-            ${loc.videos.map(v => `
-              <div style="margin-bottom:10px;">
-                <img src="${v.img}" style="width:100%;border-radius:6px;" />
-                <a href="#" onclick="openLightboxWith('${v.url}');return false;">▶ ${v.title}</a>
-              </div>
-            `).join('')}
+        const content = `
+          <div style="max-width:240px;font-size:13px;line-height:1.4;">
+            <div style="font-weight:700;margin-bottom:6px;">${loc.title}</div>
+            <div style="display:grid;grid-template-columns:1fr;gap:10px;max-height:220px;overflow:auto;">
+              ${loc.videos.map(v => `
+                <div style="border:1px solid #eee;border-radius:8px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.06);">
+                  <img src="${v.img}" alt="" style="width:100%;display:block;aspect-ratio:16/9;object-fit:cover;">
+                  <a href="#" onclick="openLightboxWith('${v.url}');return false;"
+                     style="display:block;text-align:center;padding:8px 10px;background:#0a66c2;color:#fff;text-decoration:none;font-weight:600;">
+                    ▶ ${v.title}
+                  </a>
+                </div>
+              `).join("")}
+            </div>
           </div>
         `;
-        const iw = new google.maps.InfoWindow({ content: html });
+        const iw = new google.maps.InfoWindow({ content });
 
         marker.addListener("click", () => {
+          infoWindows.forEach(w => w.close());
           iw.open(map, marker);
+          infoWindows.splice(0, infoWindows.length, iw);
         });
       });
+
+      map.fitBounds(bounds);
     }
     window.initMap = initMap;
   </script>
 
-  <!-- Google Maps API -->
+  <!-- Google Maps API（已放入你的 Key；建议在 GCP 限制域名与 API） -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAiPppm_6CpLT6byPgxY035zVybgFDg5Hs&callback=initMap" async defer></script>
 </body>
 </html>
