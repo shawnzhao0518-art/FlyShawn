@@ -78,7 +78,7 @@
     </div>
   </header>
 
-  <!-- 视频卡片（沿用你的 5 个） -->
+  <!-- 视频卡片 -->
   <main>
     <section class="grid">
       <figure class="card" data-src="https://player.vimeo.com/video/1111634878">
@@ -121,8 +121,13 @@
 
   <!-- Footer -->
   <footer>
-    © 2025 | Vimeo · Imgur <br>
-    <a href="mailto:shawnzhao0518@gmail.com">shawnzhao0518@gmail.com</a><br>
+    © 2025 | Vimeo · Imgur <br><br>
+    💡 Need a personal website like this or want to give feedback?<br>
+    📩 Contact me — website design & setup service available.<br>
+    ✉️ Email: 
+    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=shawnzhao0518@gmail.com" target="_blank">
+      shawnzhao0518@gmail.com
+    </a><br>
     <a href="https://about-shawn-ssfa.vercel.app" target="_blank" class="about-btn">About Shawn</a>
   </footer>
 
@@ -155,7 +160,7 @@
     window.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
     document.querySelectorAll('.card').forEach(c => c.addEventListener('click', () => openLightboxWith(c.dataset.src)));
 
-    // ===== 地图点位（合并相同地点，信息窗内展示多视频） =====
+    // 地图点位
     const LOCATIONS = [
       { title:"Parramatta Lake Walk", lat:-33.7890416, lng:151.0104213, videos:[
         { title:"Avata 2", img:"https://i.imgur.com/3fQty8V.jpeg", url:"https://player.vimeo.com/video/1111634878" }
@@ -177,7 +182,6 @@
       ]}
     ];
 
-    // 统一的信息窗卡片
     function buildInfoHTML(loc){
       return `
         <div style="max-width:280px;font-size:14px;line-height:1.45;">
@@ -197,7 +201,6 @@
       `;
     }
 
-    // 小地图（标题里的迷你图）
     function initMiniMap(){
       const map = new google.maps.Map(document.getElementById("map-header"), {
         disableDefaultUI:true, gestureHandling:"none",
@@ -218,7 +221,6 @@
       map.fitBounds(bounds);
     }
 
-    // 全屏地图
     function openFullMap(){
       const wrap = document.getElementById("fullscreen-map");
       wrap.style.display = "block";
@@ -242,18 +244,16 @@
       mapFull.fitBounds(bounds);
     }
 
-    // 挂载
     function initMap(){ initMiniMap(); }
     window.initMap = initMap;
 
-    // 事件
     document.getElementById("fullscreen-btn").addEventListener("click", openFullMap);
     document.getElementById("close-map").addEventListener("click", () => {
       document.getElementById("fullscreen-map").style.display = "none";
     });
   </script>
 
-  <!-- Google Maps API（确保已设置域名与 API 限制） -->
+  <!-- Google Maps API -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAiPppm_6CpLT6byPgxY035zVybgFDg5Hs&callback=initMap" async defer></script>
 </body>
 </html>
